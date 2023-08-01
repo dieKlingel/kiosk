@@ -1,0 +1,81 @@
+<div style="height: inherit;">
+	<style scoped>
+		main {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: space-evenly;
+		}
+	</style>
+	<main>
+		<style scoped>
+			.numpad {
+				display: grid;
+				grid-template-columns: 1fr 1fr 1fr;
+			}
+
+			button {
+				width: 10em;
+				aspect-ratio: 1;
+			}
+		</style>
+		<div class="input">
+			<style scoped>
+				#passcode {
+					text-align: center;
+				}
+			</style>
+			<input id="passcode" type="password" readonly />
+		</div>
+		<div class="numpad">
+			<button onclick="passcode.append(this)" number></button>
+			<button onclick="passcode.append(this)" number></button>
+			<button onclick="passcode.append(this)" number></button>
+			<button onclick="passcode.append(this)" number></button>
+			<button onclick="passcode.append(this)" number></button>
+			<button onclick="passcode.append(this)" number></button>
+			<button onclick="passcode.append(this)" number></button>
+			<button onclick="passcode.append(this)" number></button>
+			<button onclick="passcode.append(this)" number></button>
+			<button onclick="passcode.remove()">
+				<img src="assets/keyboard_backspace_FILL0_wght400_GRAD0_opsz48.svg" />
+			</button>
+			<button onclick="passcode.append(this)" number></button>
+			<button onclick="passcode.submit()">
+				<img src="assets/vpn_key_FILL0_wght400_GRAD0_opsz48.svg" />
+			</button>
+		</div>
+	</main>
+	<script>
+		const passcode = {
+			characters: '1234567890',
+			append: function (sender) {
+				htmx.find("#passcode").value += sender.innerText;
+			},
+			remove: function () {
+				htmx.find("#passcode").value = htmx.find("#passcode").value.slice(0, -1);
+			},
+			clear: function () {
+				htmx.find("#passcode").value = "";
+			},
+			submit: function () {
+				this.randomize();
+				// TODO: send unlock event
+				this.clear();
+			},
+			randomize: function () {
+				this.characters = this.characters.split('').sort(function () { return 0.5 - Math.random() }).join('');
+				const buttons = htmx.findAll(htmx.find(".numpad"), "button[number]");
+				for (let i = 0; i < buttons.length; i++) {
+					buttons[i].innerText = this.characters[i];
+				}
+			}
+		};
+
+		(function init() {
+			passcode.randomize();
+		})();
+	</script>
+</div>
