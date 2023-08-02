@@ -15,24 +15,27 @@
 				justify-content: space-evenly;
 			}
 		</style>
-		<main onclick="sign.ring(this)">
-			<script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+		<main id="sign">
 			<lottie-player id="player" src="assets/animation_lksw9bce.json" background="Transparent" speed="1"
 				style="width: 300px; height: 300px" direction="1" mode="normal">
 			</lottie-player>
-			<div>Kai Mayer &lt;kai@mayer.sh&gt;</div>
+			<div>Sven Schoch</div>
 		</main>
-		<script>
-			const sign = {
-				ring: function (sender) {
-					let audio = new Audio("assets/ring-sound.wav");
-					let player = htmx.find(sender, "#player");
-					player.stop();
-					audio.play();
-					player.play();
-					// TODO: emit ring signal
-				}
-			}
-		</script>
 	</div>
+	<script type="module">
+		import { api } from "./internal/api.js"
+
+		const SIGN_IDENTIFIER = "default"
+
+		const sign = htmx.find(htmx.find("#sign-sven-schoch"), "#sign");
+		sign.addEventListener("click", () => {
+			api.ring(SIGN_IDENTIFIER)
+
+			let audio = new Audio("assets/ring-sound.wav");
+			let player = htmx.find(sign, "#player");
+			player.stop();
+			audio.play();
+			player.play();
+		}) 
+	</script>
 </div>
