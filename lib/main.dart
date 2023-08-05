@@ -34,13 +34,6 @@ void main(List<String> args) async {
     ..registerSingleton(AppRepository())
     ..registerSingleton(SignRepository());
 
-  try {
-    await GetIt.I<AppRepository>().validate(throwable: true);
-  } on BluePrintException catch (exception) {
-    Logger.error(exception.msg);
-    exit(1);
-  }
-
   runApp(
     MultiProvider(
       providers: [

@@ -1,111 +1,56 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:yaml/yaml.dart';
 
-import '../extensions/yaml_map.dart';
-import 'yaml_file_base_repository.dart';
-
-class AppRepository extends YamlFileBaseRepository {
-  EdgeInsets? _viewportClip;
-  Uri? _mqttUri;
-  String? _mqttUsername;
-  String? _mqttPassword;
-  Duration? _screenTimeout;
-  int? _httpPort;
-
-  Future<EdgeInsets> fetchViewportClip({bool useCache = true}) async {
-    EdgeInsets? clip = _viewportClip;
-
-    if (clip != null && useCache) {
-      return clip;
+class AppRepository {
+  Future<EdgeInsets> fetchViewportClip() async {
+    String? clips = Platform.environment["DIEKLINGEL_CLIP"];
+    if (clips == null || clips.isEmpty) {
+      return EdgeInsets.zero;
     }
 
-    YamlMap config = await readYamlConfig();
-    YamlMap viewportClip = config
-        .get<YamlMap>("gui")
-        .get<YamlMap>("viewport")
-        .get<YamlMap>("clip");
+    final regex = RegExp("^\\d+,\\d+,\\d+,\\d+\$");
 
-    clip = EdgeInsets.fromLTRB(
-      viewportClip.get<int>("left").toDouble(),
-      viewportClip.get<int>("top").toDouble(),
-      viewportClip.get<int>("right").toDouble(),
-      viewportClip.get<int>("bottom").toDouble(),
+    if (!regex.hasMatch(clips)) {
+      stdout.writeln(
+        "Canno read DIEKLINGEL_CLIP, format has to be left,top,right,bottom",
+      );
+      return EdgeInsets.zero;
+    }
+
+    List<int> clip = clips.split(",").map((e) => int.parse(e)).toList();
+
+    return EdgeInsets.fromLTRB(
+      clip[0].toDouble(),
+      clip[1].toDouble(),
+      clip[2].toDouble(),
+      clip[3].toDouble(),
     );
-
-    _viewportClip = clip;
-    return clip;
   }
 
-  Future<Uri> fetchMqttUri({bool useCache = true}) async {
-    Uri? uri = _mqttUri;
-
-    if (uri != null && useCache) {
-      return uri;
-    }
-
-    YamlMap config = await readYamlConfig();
-    String rawUri = config.get<YamlMap>("mqtt").get<String>("uri");
-    uri = Uri.parse(rawUri);
-
-    _mqttUri = uri;
-    return uri;
+  Future<Uri> fetchMqttUri() async {
+    String rawUri = Platform.environment["DIEKLINGEL_MQTT_URI"] ?? "";
+    return Uri.parse(rawUri);
   }
 
-  Future<String> fetchMqttUsername({bool useCache = true}) async {
-    String? username = _mqttUsername;
-
-    if (username != null && useCache) {
-      return username;
-    }
-
-    YamlMap config = await readYamlConfig();
-    username = config.get<YamlMap>("mqtt").get<String>("username");
-
-    _mqttUsername = username;
+  Future<String> fetchMqttUsername() async {
+    String username = Platform.environment["DIEKLINGEL_MQTT_USERNAME"] ?? "";
     return username;
   }
 
   Future<String> fetchMqttPassword({bool useCache = true}) async {
-    String? password = _mqttPassword;
-
-    if (password != null && useCache) {
-      return password;
-    }
-
-    YamlMap config = await readYamlConfig();
-    password = config.get<YamlMap>("mqtt").get<String>("password");
-
-    _mqttPassword = password;
+    String password = Platform.environment["DIEKLINGEL_MQTT_PASSWORD"] ?? "";
     return password;
   }
 
-  Future<int> fetchHttpPort({bool useCache = true}) async {
-    int? port = _httpPort;
-
-    if (port != null && useCache) {
-      return port;
+  Future<Duration> fetchScreenTimeout() async {
+    String? timeout = Platform.environment["DIEKLINGEL_TIMEOUT"];
+    if (timeout == null || timeout.isEmpty) {
+      return const Duration(seconds: 30);
     }
 
-    YamlMap config = await readYamlConfig();
-    port = config.read<YamlMap>("http")?.read<int>("port") ?? 80;
+    int seconds = int.tryParse(timeout) ?? 30;
 
-    _httpPort = port;
-    return port;
-  }
-
-  Future<Duration> fetchScreenTimeout({bool useCache = true}) async {
-    Duration? timeout = _screenTimeout;
-
-    if (timeout != null && useCache) {
-      return timeout;
-    }
-
-    YamlMap config = await readYamlConfig();
-    int value = config.get<YamlMap>("gui").get<int>("timeout");
-
-    timeout = Duration(seconds: value);
-    _screenTimeout = timeout;
-
-    return timeout;
+    return Duration(seconds: seconds);
   }
 }
