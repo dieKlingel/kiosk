@@ -11,12 +11,15 @@ import 'package:path/path.dart' as path;
 import '../models/sign.dart';
 
 class BellSign extends StatefulWidget {
-  final Sign sign;
-  final void Function(String identifier)? onTap;
+  final File sign;
+  final void Function(
+    String eventName,
+    Map<String, Object?> eventArgs,
+  )? onEvent;
 
   const BellSign({
     required this.sign,
-    this.onTap,
+    this.onEvent,
     super.key,
   });
 
@@ -25,13 +28,12 @@ class BellSign extends StatefulWidget {
 }
 
 class _Sign extends State<BellSign> {
-  final AudioPlayer _player = AudioPlayer();
   final Runtime _runtime = Runtime();
   final DynamicContent _content = DynamicContent();
 
   Widget _native(BuildContext context) {
     return FutureBuilder(
-      future: widget.sign.interface.exists(),
+      future: widget.sign.exists(),
       builder: (context, snapshot) {
         bool? fileExists = snapshot.data;
         if (fileExists == null) {
@@ -55,7 +57,7 @@ class _Sign extends State<BellSign> {
         }
 
         return FutureBuilder(
-          future: widget.sign.interface.readAsString(),
+          future: widget.sign.readAsString(),
           builder: (context, snapshot) {
             if (snapshot.hasError) {
               return const Center(
@@ -78,7 +80,7 @@ class _Sign extends State<BellSign> {
               rwidget = parseLibraryFile(rfw);
             } on ParserException catch (exception) {
               stdout.writeln(
-                "Error on creating Sing: ${widget.sign.identifier}: ${exception.toString()}",
+                "Error on creating Sing: ${widget.sign.path}: ${exception.toString()}",
               );
               return Text(exception.toString());
             }
@@ -103,10 +105,7 @@ class _Sign extends State<BellSign> {
               ),
               data: _content,
               onEvent: (eventName, eventArguments) {
-                if (eventName == "ring") {
-                  _onClick();
-                  _play();
-                }
+                widget.onEvent?.call(eventName, eventArguments);
               },
             );
           },
@@ -115,29 +114,8 @@ class _Sign extends State<BellSign> {
     );
   }
 
-  Future<void> _onClick() async {
-    widget.onTap?.call(widget.sign.identifier);
-  }
-
-  Future<void> _play() async {
-    if (!(await widget.sign.audio.exists())) {
-      Logger.error(
-        "The requested file '${widget.sign.audio.path}' does not exist.",
-      );
-      return;
-    }
-    await _player.setSourceDeviceFile(path.absolute(widget.sign.audio.path));
-    await _player.stop();
-    await _player.resume();
-  }
-
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _onClick(),
-      child: Container(
-        child: _native(context),
-      ),
-    );
+    return _native(context);
   }
 }

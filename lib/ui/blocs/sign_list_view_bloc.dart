@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kiosk/models/action_execute_request.dart';
@@ -24,12 +25,12 @@ class SignListViewBloc extends Cubit<SignListState> {
 
   Future<void> refresh() async {
     emit(SignListState.loading());
-    List<Sign> signs = await signRepository.fetchAllSigns();
+    List<File> signs = await signRepository.fetchAllSigns();
 
     emit(SignListState.signs(signs));
   }
 
-  Future<void> ring(Sign sign) async {
+  Future<void> ring(String sign) async {
     MqttHttpClient client = MqttHttpClient();
     Uri uri = await appRepository.fetchMqttUri();
     String username = await appRepository.fetchMqttUsername();
@@ -42,7 +43,7 @@ class SignListViewBloc extends Cubit<SignListState> {
           ActionExecuteRequest(
             "ring",
             environment: {
-              "SIGN": sign.identifier,
+              "SIGN": sign,
             },
           ).toMap(),
         ),

@@ -1,10 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../blocs/app_view_bloc.dart';
 import '../blocs/sign_list_view_bloc.dart';
 import '../../components/bell_sign.dart';
-import '../../models/sign.dart';
 import '../states/app_state.dart';
 import '../states/sign_list_state.dart';
 
@@ -18,6 +19,16 @@ class SignListView extends StatefulWidget {
 class _SignListViewState extends State<SignListView>
     with AutomaticKeepAliveClientMixin {
   final _controller = ScrollController();
+
+  void onEvent(String eventName, Map<String, Object?> eventArgs) {
+    switch (eventName) {
+      case "ring":
+        context
+            .read<SignListViewBloc>()
+            .ring(eventArgs["sign"]?.toString() ?? "");
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,13 +53,11 @@ class _SignListViewState extends State<SignListView>
               controller: _controller,
               itemCount: state.signs.length,
               itemBuilder: (context, index) {
-                Sign sign = state.signs[index];
+                File file = state.signs[index];
 
                 return BellSign(
-                  sign: sign,
-                  onTap: (identifier) {
-                    context.read<SignListViewBloc>().ring(sign);
-                  },
+                  sign: file,
+                  onEvent: onEvent,
                 );
               },
             );

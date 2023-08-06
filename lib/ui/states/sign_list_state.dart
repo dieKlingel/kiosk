@@ -1,7 +1,7 @@
-import '../../models/sign.dart';
+import 'dart:io';
 
 class SignListState {
-  final List<Sign> signs;
+  final List<File> signs;
   final bool isLoading;
 
   SignListState._({
@@ -13,7 +13,7 @@ class SignListState {
     return SignListState._(isLoading: true);
   }
 
-  factory SignListState.signs(List<Sign> signs) {
+  factory SignListState.signs(List<File> signs) {
     return SignListState._(signs: signs);
   }
 }
