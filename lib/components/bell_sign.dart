@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:audioplayers/audioplayers.dart';
@@ -97,17 +98,21 @@ class _Sign extends State<BellSign> {
               rwidget,
             );
 
-            return RemoteWidget(
-              runtime: _runtime,
-              widget: const FullyQualifiedWidgetName(
-                LibraryName(['main']),
-                'root',
-              ),
-              data: _content,
-              onEvent: (eventName, eventArguments) {
-                widget.onEvent?.call(eventName, eventArguments);
-              },
-            );
+            return runZoned<RemoteWidget>(() {
+              Directory.current = path.dirname(widget.sign.path);
+
+              return RemoteWidget(
+                runtime: _runtime,
+                widget: const FullyQualifiedWidgetName(
+                  LibraryName(['main']),
+                  'root',
+                ),
+                data: _content,
+                onEvent: (eventName, eventArguments) {
+                  widget.onEvent?.call(eventName, eventArguments);
+                },
+              );
+            });
           },
         );
       },

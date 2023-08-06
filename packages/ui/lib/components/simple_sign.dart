@@ -1,7 +1,12 @@
+import 'dart:io';
+
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as path;
 
 class SimpleSign extends StatefulWidget {
   final String text;
+  final String? audio;
   final double height;
   final Color backgroundColor;
   final void Function()? onTap;
@@ -10,6 +15,7 @@ class SimpleSign extends StatefulWidget {
     required this.text,
     required this.height,
     required this.backgroundColor,
+    this.audio,
     this.onTap,
     super.key,
   });
@@ -24,14 +30,30 @@ class _SimpleSign extends State<SimpleSign>
     vsync: this,
     duration: const Duration(seconds: 1),
   );
+  final AudioPlayer _player = AudioPlayer();
+
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  void init() async {
+    String? audiofile = widget.audio;
+    if (audiofile == null || audiofile.isEmpty) {
+      return;
+    }
+    await _player.setSourceDeviceFile(audiofile);
+  }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () async {
         widget.onTap?.call();
+        await _player.stop();
+        await _player.resume();
         await _controller.forward(from: 0);
-        //await _controller.reverse();
       },
       child: Container(
         width: double.infinity,

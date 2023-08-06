@@ -6,6 +6,7 @@ import dieKlingel;
 
 widget root = SimpleSign(
   text: "Fam. Schoch",
+  audio: "bell.wav",
   height: 999.0,
   onTap: event "ring" {
     "sign": "default"
