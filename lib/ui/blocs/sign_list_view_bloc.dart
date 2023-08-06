@@ -8,7 +8,6 @@ import 'package:kiosk/repositories/app_repository.dart';
 import 'package:logger/logger.dart';
 import 'package:mqtt/mqtt.dart';
 
-import '../../models/sign.dart';
 import '../../repositories/sign_repository.dart';
 import '../states/sign_list_state.dart';
 

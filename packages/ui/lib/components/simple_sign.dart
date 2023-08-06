@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart' as path;
 
 class SimpleSign extends StatefulWidget {
   final String text;

@@ -1,15 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:logger/logger.dart';
 import 'package:rfw/formats.dart';
 import 'package:rfw/rfw.dart';
 import 'package:ui/ui.dart';
 import 'package:path/path.dart' as path;
-
-import '../models/sign.dart';
 
 class BellSign extends StatefulWidget {
   final File sign;
