@@ -29,6 +29,11 @@ sudo snap set dieklingel-kiosk <key>=<value>
 Run the kiosk
 
 ```bash
+sudo snap install ubuntu-frame
+sudo snap set ubuntu-frame daemon=true
+```
+
+```bash
 sudo snap set dieklingel-kiosk daemon=true
 ```
 
