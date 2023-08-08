@@ -15,6 +15,7 @@ apps:
   dieklingel-kiosk:
     command-chain: &_command-chain
       - bin/wayland-launch
+      - bin/environment
     command: &_command bin/kiosk
     plugs: &_plugs
       - opengl

@@ -1,0 +1,11 @@
+#!/bin/sh
+set -e
+
+export DIEKLINGEL_CLIP=$(snapctl get clip)
+export DIEKLINGEL_TIMEOUT=$(snapctl get timeout)
+
+export DIEKLINGEL_MQTT_URI=$(snapctl get mqtt.uri)
+export DIEKLINGEL_MQTT_USERNAME=$(snapctl get mqtt.username)
+export DIEKLINGEL_MQTT_PASSWORD=$(snapctl get mqtt.password)
+
+exec "$@"
