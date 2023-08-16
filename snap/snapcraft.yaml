@@ -1,5 +1,5 @@
 name: dieklingel-kiosk
-version: 0.1.1+1
+version: 0.1.2+1
 summary: The kiosk application for dieKlingel Core
 description: A Ubuntu-Frame compatible kiosk snap for dieKlingel
 confinement: strict
@@ -29,7 +29,7 @@ apps:
       XDG_DATA_DIRS: $SNAP/usr/share
       GDK_GL: gles
       LD_LIBRARY_PATH: $LD_LIBRARY_PATH:$SNAP/bin/lib:$SNAP/usr/lib/$SNAPCRAFT_ARCH_TRIPLET
-      DIEKLINGEL_HOME: $SNAP_USER_COMMON
+      DIEKLINGEL_HOME: $SNAP_DATA
 
   daemon:
     daemon: simple
@@ -44,7 +44,7 @@ apps:
 parts:
   flutter-git:
     source: https://github.com/flutter/flutter.git
-    source-branch: '3.12.0'
+    source-branch: "3.12.0"
     plugin: nil
     override-build: |
       mkdir -p $SNAPCRAFT_PART_INSTALL/usr/bin
@@ -61,7 +61,7 @@ parts:
       - curl
       - ninja-build
       - unzip
-    override-prime: ''
+    override-prime: ""
 
   dieklingel-kiosk:
     plugin: nil
