@@ -27,7 +27,9 @@ class _SimpleSign extends State<SimpleSign>
     vsync: this,
     duration: const Duration(seconds: 1),
   );
-  final AudioPlayer _player = AudioPlayer();
+  final AudioPlayer _player = AudioPlayer(
+    playerId: "dieklingel-kiosk-audio-player",
+  );
 
   @override
   void initState() {
@@ -41,6 +43,7 @@ class _SimpleSign extends State<SimpleSign>
       return;
     }
     await _player.setSourceDeviceFile(audiofile);
+    await _player.stop();
   }
 
   @override

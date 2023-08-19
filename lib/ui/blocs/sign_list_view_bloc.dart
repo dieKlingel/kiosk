@@ -38,6 +38,7 @@ class SignListViewBloc extends Cubit<SignListState> {
       await client.connect(username: username, password: password);
     } catch (e) {
       stderr.writeln(e.toString());
+      client.disconnect();
       return;
     }
     client.publish(
@@ -54,5 +55,6 @@ class SignListViewBloc extends Cubit<SignListState> {
         ),
       ).toJsonString(),
     );
+    client.disconnect();
   }
 }
