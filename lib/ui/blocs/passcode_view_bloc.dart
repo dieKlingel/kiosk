@@ -24,6 +24,7 @@ class PasscodeViewBloc extends Cubit<PasscodeState> {
       await client.connect(username: username, password: password);
     } catch (e) {
       stderr.writeln(e.toString());
+      client.disconnect();
       return;
     }
     client.publish(
@@ -40,5 +41,6 @@ class PasscodeViewBloc extends Cubit<PasscodeState> {
         ),
       ).toJsonString(),
     );
+    client.disconnect();
   }
 }
