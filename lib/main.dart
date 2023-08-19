@@ -2,8 +2,6 @@ import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
-import 'package:logger/logger.dart';
-import 'package:window_manager/window_manager.dart';
 
 import 'ui/blocs/app_view_bloc.dart';
 import 'repositories/app_repository.dart';
@@ -18,15 +16,6 @@ void main(List<String> args) async {
 
   if (Platform.environment["DIEKLINGEL_HOME"] != null) {
     Directory.current = Platform.environment["DIEKLINGEL_HOME"];
-  }
-
-  if (args.contains("--kiosk") || args.contains("-k")) {
-    Logger.info("Running as kiosk.");
-
-    WindowManager.instance
-      ..setFullScreen(true)
-      ..setAlwaysOnTop(true)
-      ..setAsFrameless();
   }
 
   GetIt.I
