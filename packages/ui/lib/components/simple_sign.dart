@@ -27,23 +27,14 @@ class _SimpleSign extends State<SimpleSign>
     vsync: this,
     duration: const Duration(seconds: 1),
   );
-  final AudioPlayer _player = AudioPlayer(
-    playerId: "dieklingel-kiosk-audio-player",
-  );
+
+  final AudioPlayer _player = AudioPlayer()
+    ..setReleaseMode(ReleaseMode.stop)
+    ..setPlayerMode(PlayerMode.lowLatency);
 
   @override
   void initState() {
     super.initState();
-    init();
-  }
-
-  void init() async {
-    String? audiofile = widget.audio;
-    if (audiofile == null || audiofile.isEmpty) {
-      return;
-    }
-    await _player.setSourceDeviceFile(audiofile);
-    await _player.stop();
   }
 
   @override
@@ -51,8 +42,11 @@ class _SimpleSign extends State<SimpleSign>
     return GestureDetector(
       onTap: () async {
         widget.onTap?.call();
-        await _player.stop();
-        await _player.resume();
+        String? audiofile = widget.audio;
+        if (audiofile != null && audiofile.isNotEmpty) {
+          await _player.stop();
+          await _player.play(DeviceFileSource(audiofile));
+        }
         await _controller.forward(from: 0);
       },
       child: Container(

@@ -30,7 +30,6 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   args: ^2.4.0
-  audioplayers: ^5.0.0
   blueprint: ^0.0.3
   cupertino_icons: ^1.0.2
   flutter:
