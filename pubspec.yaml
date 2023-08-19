@@ -37,12 +37,6 @@ dependencies:
     sdk: flutter
   flutter_bloc: ^8.1.2
   get_it: ^7.6.0
-  logger:
-    # path: ../logger
-    git:
-      url: https://github.com/KoiFresh/dieklingel-core.git
-      ref: feature/try-go
-      path: kiosk/packages/logger
   mqtt:
     path: packages/mqtt
   path: ^1.8.2
@@ -51,7 +45,6 @@ dependencies:
   ui:
     path: packages/ui
   uuid: ^3.0.7
-  window_manager: ^0.3.4
   yaml: ^3.1.1
 
 dev_dependencies:
