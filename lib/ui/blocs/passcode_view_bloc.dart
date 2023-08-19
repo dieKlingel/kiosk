@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kiosk/models/action_execute_request.dart';
 import 'package:kiosk/models/request.dart';
 import 'package:kiosk/repositories/app_repository.dart';
 import 'package:mqtt/mqtt.dart';
