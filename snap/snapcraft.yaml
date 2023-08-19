@@ -1,5 +1,5 @@
 name: dieklingel-kiosk
-version: 0.1.3+1
+version: 0.1.4+1
 summary: The kiosk application for dieKlingel Core
 description: A Ubuntu-Frame compatible kiosk snap for dieKlingel
 confinement: strict
