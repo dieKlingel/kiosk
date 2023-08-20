@@ -1,4 +1,5 @@
-import 'package:audioplayers/audioplayers.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 class SimpleSign extends StatefulWidget {
@@ -28,10 +29,6 @@ class _SimpleSign extends State<SimpleSign>
     duration: const Duration(seconds: 1),
   );
 
-  final AudioPlayer _player = AudioPlayer()
-    ..setReleaseMode(ReleaseMode.stop)
-    ..setPlayerMode(PlayerMode.lowLatency);
-
   @override
   void initState() {
     super.initState();
@@ -43,9 +40,14 @@ class _SimpleSign extends State<SimpleSign>
       onTap: () async {
         widget.onTap?.call();
         String? audiofile = widget.audio;
+
         if (audiofile != null && audiofile.isNotEmpty) {
-          await _player.stop();
-          await _player.play(DeviceFileSource(audiofile));
+          Process.run("gsound-play", ["-f", audiofile]).then((value) {
+            if (value.exitCode != 0) {
+              stdout.write(value.stdout);
+              stderr.write(value.stderr);
+            }
+          });
         }
         await _controller.forward(from: 0);
       },
