@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:kiosk/repositories/app_repository.dart';
+import 'package:mqtt/mqtt.dart';
 
 import '../blocs/app_view_bloc.dart';
 import '../blocs/passcode_view_bloc.dart';
@@ -51,12 +52,14 @@ class _Viewport extends StatelessWidget {
             BlocProvider(
               create: (_) => PasscodeViewBloc(
                 GetIt.I<AppRepository>(),
+                GetIt.I<MqttClient>(),
               ),
             ),
             BlocProvider(
               create: (_) => SignListViewBloc(
                 GetIt.I<AppRepository>(),
                 GetIt.I<SignRepository>(),
+                GetIt.I<MqttClient>(),
               ),
             )
           ],

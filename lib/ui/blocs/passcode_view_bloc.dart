@@ -12,21 +12,24 @@ import '../states/passcode_state.dart';
 
 class PasscodeViewBloc extends Cubit<PasscodeState> {
   final AppRepository appRepository;
+  final MqttClient client;
 
-  PasscodeViewBloc(this.appRepository) : super(PasscodeState());
+  PasscodeViewBloc(this.appRepository, this.client) : super(PasscodeState());
 
   Future<void> submit(String passcode) async {
-    Uri uri = await appRepository.fetchMqttUri();
-    MqttClient client = MqttClient(uri);
-    try {
-      String username = await appRepository.fetchMqttUsername();
-      String password = await appRepository.fetchMqttPassword();
-      await client.connect(username: username, password: password);
-    } catch (e) {
-      stderr.writeln(e.toString());
-      client.disconnect();
-      return;
+    if (!client.isConnected()) {
+      try {
+        String username = await appRepository.fetchMqttUsername();
+        String password = await appRepository.fetchMqttPassword();
+        await client.connect(username: username, password: password);
+      } catch (e) {
+        stderr.writeln(e.toString());
+        return;
+      }
     }
+
+    Uri uri = await appRepository.fetchMqttUri();
+
     client.publish(
       path.normalize("./${uri.path}/actions/execute"),
       Request(
@@ -41,6 +44,5 @@ class PasscodeViewBloc extends Cubit<PasscodeState> {
         ),
       ).toJsonString(),
     );
-    client.disconnect();
   }
 }
