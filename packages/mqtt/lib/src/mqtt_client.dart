@@ -32,7 +32,13 @@ class MqttClient {
     _client.disconnect();
   }
 
+  bool isConnected() {
+    return _client.connectionStatus?.state ==
+        mqtt.MqttConnectionState.connected;
+  }
+
   Future<void> connect({String username = "", String password = ""}) async {
+    _client.disconnect();
     await _client.connect(username, password);
     _client.updates!.listen((event) {
       mqtt.MqttPublishMessage rec = event[0].payload as mqtt.MqttPublishMessage;

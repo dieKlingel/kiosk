@@ -14,10 +14,12 @@ import '../states/sign_list_state.dart';
 class SignListViewBloc extends Cubit<SignListState> {
   final AppRepository appRepository;
   final SignRepository signRepository;
+  final MqttClient client;
 
   SignListViewBloc(
     this.appRepository,
     this.signRepository,
+    this.client,
   ) : super(SignListState.signs([])) {
     refresh();
   }
@@ -30,17 +32,19 @@ class SignListViewBloc extends Cubit<SignListState> {
   }
 
   Future<void> ring(String sign) async {
-    Uri uri = await appRepository.fetchMqttUri();
-    MqttClient client = MqttClient(uri);
-    try {
-      String username = await appRepository.fetchMqttUsername();
-      String password = await appRepository.fetchMqttPassword();
-      await client.connect(username: username, password: password);
-    } catch (e) {
-      stderr.writeln(e.toString());
-      client.disconnect();
-      return;
+    if (!client.isConnected()) {
+      try {
+        String username = await appRepository.fetchMqttUsername();
+        String password = await appRepository.fetchMqttPassword();
+        await client.connect(username: username, password: password);
+      } catch (e) {
+        stderr.writeln(e.toString());
+        return;
+      }
     }
+
+    Uri uri = await appRepository.fetchMqttUri();
+
     client.publish(
       path.normalize("./${uri.path}/actions/execute"),
       Request(
@@ -55,6 +59,5 @@ class SignListViewBloc extends Cubit<SignListState> {
         ),
       ).toJsonString(),
     );
-    client.disconnect();
   }
 }
