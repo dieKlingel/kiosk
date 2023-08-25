@@ -53,7 +53,7 @@ class SignListViewBloc extends Cubit<SignListState> {
           {
             "pattern": "ring",
             "environment": {
-              "SIGB": sign,
+              "SIGN": sign,
             }
           },
         ),
